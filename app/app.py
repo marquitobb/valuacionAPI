@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_marshmallow import Marshmallow
 
-from serializers import AlchemyEncoder
+#from serializers import AlchemyEncoder
 
 app = Flask(__name__)
 #api = Api(app)
@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-
+# models
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(70), unique=True)
@@ -38,6 +38,24 @@ class TaskSchema(ma.Schema):
 
 task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre= db.Column(db.String(80))
+    correo= db.Column(db.String(80))
+    contrasena = db.Column(db.String(80))
+
+db.create_all()
+
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'nombre', 'correo', 'contrasena')
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
+
+
+# endpoints
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
