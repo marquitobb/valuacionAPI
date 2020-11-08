@@ -1,0 +1,1 @@
+docker exec docker_mewtwo_1 python -m unittest discover

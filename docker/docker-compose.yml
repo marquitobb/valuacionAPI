@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+    mewtwo:
+        restart: always
+        build: 
+            context: ../
+            dockerfile: ./docker/services/web/Dockerfile
+        command: newrelic-admin run-program python manage.py run -h 0.0.0.0
+        volumes:
+            - ../src/:/usr/src/app/
+        ports:
+            - 5000:5000
+        env_file:
+            - ./services/web/.env.dev
+        networks:
+            - backend
+    
+    db:
+        restart: always
+        image: mariadb:latest
+        volumes:
+            - ./services/db/init/01-databases.sql:/docker-entrypoint-initdb.d/01-databases.sql
+            - mewtwo_dbdata:/var/lib/mysql
+        env_file:
+            - ./services/db/.env.dev
+        ports:
+            - "3306:3306"
+        networks:
+            - backend
+    phpmyadmin:
+        depends_on:
+            - db
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - '8080:80'
+        environment:
+            PMA_HOST: db
+            PMA_USER: ashketchum
+            PMA_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: secret
+        networks:
+            backend:
+volumes:
+    mewtwo_dbdata:
+
+networks:
+    backend:

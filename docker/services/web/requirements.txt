@@ -1,0 +1,11 @@
+Flask
+flask-sqlalchemy
+mysql-connector
+alembic
+sqlalchemy-utils
+pytz
+werkzeug
+flask-jwt-extended
+requests
+flask-cors
+newrelic
